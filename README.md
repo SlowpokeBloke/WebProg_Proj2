@@ -9,3 +9,6 @@ php logic for questions and lifeline and name input
 #Siddhant 11/09 - 11/10:
 php logic for the remaining two lifelines
 
+#Daniel 11/09 - 11/10
+php logic for randomized question and answer order
+
