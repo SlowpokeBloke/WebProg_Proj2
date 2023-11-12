@@ -8,12 +8,12 @@ $questions = [
     [
         'question' => 'What is the capital of France?',
         'answers' => ['Berlin', 'Paris', 'Rome', 'Madrid'],
-        'correct' => 1
+        'correct' => 'Paris'
     ],
     [
         'question' => 'Which planet is known as the Red Planet?',
         'answers' => ['Earth', 'Venus', 'Mars', 'Jupiter'],
-        'correct' => 2
+        'correct' => 'Mars'
     ],
     // ... More questions
 ];
@@ -35,14 +35,79 @@ function get_high_scores($scores_file) {
 
 // Function to save the score
 function save_score($name, $score, $scores_file) {
+    // Get existing high scores
     $scores = get_high_scores($scores_file);
-    $scores[$name] = $score;
+
+    // Check if the player already has a score
+    if (array_key_exists($name, $scores)) {
+        // Update score only if the new score is higher
+        if ($score > $scores[$name]) {
+            $scores[$name] = $score;
+        }
+    } else {
+        // Add the new player's score
+        $scores[$name] = $score;
+    }
+
+    // Sort the scores in descending order
     arsort($scores);
+
+    // Keep only the top scores (e.g., top 5)
+    $scores = array_slice($scores, 0, 5, true);
+
+    // Prepare scores to be written to the file
     $scores_data = [];
     foreach ($scores as $name => $score) {
         $scores_data[] = $score . '|' . $name;
     }
+
+    // Write the scores back to the file
     file_put_contents($scores_file, implode("\n", $scores_data));
+}
+
+// Process the lifeline
+function use_lifeline($lifeline) {
+    global $questions;
+	
+	//FIFTY FIFTY logic
+    if ($lifeline === 'fifty_fifty' && !in_array('fifty_fifty', $_SESSION['used_lifelines'])) {
+        $_SESSION['used_lifelines'][] = 'fifty_fifty';
+        $current_question = $questions[$_SESSION['current_question_index']];
+        $incorrect_answers = array_keys(array_diff($current_question['answers'], [$current_question['answers'][$current_question['correct']]]));
+        shuffle($incorrect_answers);
+        array_splice($incorrect_answers, 2);
+        $_SESSION['fifty_fifty_options'] = array_diff_key($current_question['answers'], array_flip($incorrect_answers));
+    	
+	// ASK THE AUDIENCE Lifeline Logic
+	} elseif ($lifeline === 'ask_audience' && !in_array('ask_audience', $_SESSION['used_lifelines'])) {
+    // Mark the 'Ask the Audience' lifeline as used
+    $_SESSION['used_lifelines'][] = 'ask_audience';
+    // Get the current question for audience response simulation
+    $current_question = $questions[$_SESSION['current_question_index']];
+    // Simulate audience response (customize the logic based on your preference)
+    $audience_response = array_fill(0, count($current_question['answers']), 0);
+    // Simulate a higher probability for the correct answer
+    $correct_answer_index = $current_question['correct'];
+    $audience_response[$correct_answer_index] = rand(70, 100);
+    // Simulate the remaining percentage among the incorrect answers
+    $remaining_percentage = 100 - $audience_response[$correct_answer_index];   
+    // Distribute remaining percentage among the incorrect answers
+    $incorrect_answer_indices = array_diff(range(0, count($current_question['answers']) - 1), [$correct_answer_index]);  
+    foreach ($incorrect_answer_indices as $index) {
+        $audience_response[$index] = rand(0, $remaining_percentage);
+        $remaining_percentage -= $audience_response[$index];
+    }
+    // Store the simulated audience response in the session
+    $_SESSION['audience_response'] = $audience_response;
+	
+	//PHONE A FRIEND logic
+	} elseif ($lifeline === 'phone_a_friend' && !in_array('phone_a_friend', $_SESSION['used_lifelines'])) {
+        $_SESSION['used_lifelines'][] = 'phone_a_friend';
+        $current_question = $questions[$_SESSION['current_question_index']];
+        // Simulate a friend's response (you can customize the logic based on your preference)
+        $friend_response = $current_question['answers'][$current_question['correct']];
+        $_SESSION['phone_a_friend_response'] = $friend_response;
+    }
 }
 
 // Check if a new game is starting with a player's name
@@ -53,21 +118,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])) {
     $_SESSION['used_lifelines'] = [];
     // Redirect to start the game with a clean URL
     header('Location: index.php');
-    exit;
+
+    //shuffle the order of questions for a randomized game
+shuffle($questions);
+
+//function to shuffle answers for a given question
+function shuffleAnswers($question) {
+    $answers = $question['answers'];
+    shuffle($answers);
+    return $answers;
 }
 
-// Process the lifeline
-function use_lifeline($lifeline) {
-    global $questions;
-
-    if ($lifeline === 'fifty_fifty' && !in_array('fifty_fifty', $_SESSION['used_lifelines'])) {
-        $_SESSION['used_lifelines'][] = 'fifty_fifty';
-        $current_question = $questions[$_SESSION['current_question_index']];
-        $incorrect_answers = array_keys(array_diff($current_question['answers'], [$current_question['answers'][$current_question['correct']]]));
-        shuffle($incorrect_answers);
-        array_splice($incorrect_answers, 2);
-        $_SESSION['fifty_fifty_options'] = array_diff_key($current_question['answers'], array_flip($incorrect_answers));
-    }
+//shuffle answers for each question
+foreach ($questions as $key => $question) {
+    $questions[$key]['answers'] = shuffleAnswers($question);
+}
+    
+    exit;
 }
 
 // Check if a lifeline was used
@@ -82,6 +149,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
         $_SESSION['score'] += 1; // Increase score for correct answer
         $_SESSION['current_question_index'] += 1; // Move to next question
         unset($_SESSION['fifty_fifty_options']); // Reset the 50:50 lifeline options
+        unset($_SESSION['audience_response']); // Reset the audience response lifeline
+        unset($_SESSION['phone_a_friend_response']); // Reset the phone a friend lifeline
     } else {
         // Wrong answer, reset the game
         $game_over = true;
@@ -92,9 +161,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
 // Get the current question or end the game
 if (isset($questions[$_SESSION['current_question_index']])) {
     $current_question = $questions[$_SESSION['current_question_index']];
-    // Apply the 50:50 lifeline if it has been used for this question
+    // Apply lifelines if they have been used for this question
     if (isset($_SESSION['fifty_fifty_options'])) {
         $current_question['answers'] = $_SESSION['fifty_fifty_options'];
+    } elseif (isset($_SESSION['audience_response'])) {
+        // Display the original question with simulated audience percentages
+        $current_question['audience_response'] = $_SESSION['audience_response'];
+    } elseif (isset($_SESSION['phone_a_friend_response'])) {
+        // Display the original question with the friend's response
+        $current_question['phone_a_friend_response'] = $_SESSION['phone_a_friend_response'];
     }
 } else {
     $game_over = true;
@@ -108,6 +183,7 @@ if (isset($questions[$_SESSION['current_question_index']])) {
 $high_scores = get_high_scores($scores_file);
 
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -147,12 +223,32 @@ $high_scores = get_high_scores($scores_file);
                     <?php if (!in_array('fifty_fifty', $_SESSION['used_lifelines'])): ?>
                         <button type="submit" name="lifeline" value="fifty_fifty">Use 50:50</button>
                     <?php endif; ?>
+                    <?php if (!in_array('ask_audience', $_SESSION['used_lifelines'])): ?>
+                        <button type="submit" name="lifeline" value="ask_audience">Ask the Audience</button>
+                    <?php endif; ?>
+                    <?php if (!in_array('phone_a_friend', $_SESSION['used_lifelines'])): ?>
+                        <button type="submit" name="lifeline" value="phone_a_friend">Phone a Friend</button>
+                    <?php endif; ?>
                 </form>
             </div>
+            <?php if (isset($current_question['audience_response'])): ?>
+                <div class="lifeline-response">
+                    <p>Ask the Audience Results:</p>
+                    <?php foreach ($current_question['audience_response'] as $index => $percentage): ?>
+                        <p>Option <?php echo $index + 1; ?>: <?php echo $percentage; ?>%</p>
+                    <?php endforeach; ?>
+                </div>
+            <?php elseif (isset($current_question['phone_a_friend_response'])): ?>
+                <div class="lifeline-response">
+                    <p>Phone a Friend Response:</p>
+                    <p><?php echo $current_question['phone_a_friend_response']; ?></p>
+                </div>
+            <?php endif; ?>
         </div>
     <?php else: ?>
         <p>Game over! Your final score was: <?php echo $_SESSION['score']; ?></p>
         <a href="index.php">Play again</a>
     <?php endif; ?>
 </body>
+
 </html>
