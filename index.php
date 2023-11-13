@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])) {
     // Redirect to start the game with a clean URL
     header('Location: index.php');
 
-    //shuffle the order of questions for a randomized game
+//shuffle the order of questions for a randomized game
 shuffle($questions);
 
 //function to shuffle answers for a given question
@@ -133,7 +133,6 @@ function shuffleAnswers($question) {
 foreach ($questions as $key => $question) {
     $questions[$key]['answers'] = shuffleAnswers($question);
 }
-    
     exit;
 }
 
@@ -177,6 +176,20 @@ if (isset($questions[$_SESSION['current_question_index']])) {
         save_score($_SESSION['player_name'], $_SESSION['score'], $scores_file);
     }
     session_destroy();
+}
+
+//set checkpoint at intervals of 5
+function setCheckPoint(){
+    $checkNum = $_SESSION['score'] / 5;
+    if($checkNum > 0){
+        /*set check */
+        echo "Reached checkpoint " . $checkNum;
+    }
+}
+
+//"Take the Money and Run"/Give Up option
+function giveUp(){
+    
 }
 
 // Get the top 5 high scores to display
