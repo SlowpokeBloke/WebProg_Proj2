@@ -15,8 +15,42 @@ $questions = [
         'answers' => ['Earth', 'Venus', 'Mars', 'Jupiter'],
         'correct' => 'Mars'
     ],
+    [
+        'question' => 'Question 3',
+        'answers' => ['filler', 'filler', 'filler', '3'],
+        'correct' => '3'
+    ],
+    [
+        'question' => 'Question 4',
+        'answers' => ['4', 'filler', 'filler', 'filler'],
+        'correct' => '4'
+    ],
+    [
+        'question' => 'Question 5',
+        'answers' => ['filler', '5', 'filler', 'filler'],
+        'correct' => '5'
+    ]
     // ... More questions
 ];
+
+if (!isset($_SESSION['shuffled_questions'])) {
+    $_SESSION['shuffled_questions'] = $questions;
+
+    // Shuffle the questions at the beginning of the session
+    shuffle($_SESSION['shuffled_questions']);
+
+    // Function to shuffle answers for a given question
+    function shuffleAnswers($question) {
+        $answers = $question['answers'];
+        shuffle($answers);
+        return $answers;
+    }
+
+    // Shuffle answers for each question in the shuffled set
+    foreach ($_SESSION['shuffled_questions'] as $key => $question) {
+        $_SESSION['shuffled_questions'][$key]['answers'] = shuffleAnswers($question);
+    }
+}
 
 
 
@@ -48,31 +82,20 @@ function save_score($name, $score, $scores_file) {
     file_put_contents($scores_file, implode("\n", $scores_data));
 }
 
+
+
+
 // Check if a new game is starting with a player's name
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['player_name'])) {
     $_SESSION['player_name'] = filter_var(trim($_POST['player_name']), FILTER_SANITIZE_STRING);
     $_SESSION['score'] = 0;
     $_SESSION['current_question_index'] = 0;
     $_SESSION['used_lifelines'] = [];
-    // Redirect to start the game with a clean URL
-    header('Location: index.php');
 
-    //shuffle the order of questions for a randomized game
-shuffle($questions);
 
-//function to shuffle answers for a given question
-function shuffleAnswers($question) {
-    $answers = $question['answers'];
-    shuffle($answers);
-    return $answers;
-}
-
-//shuffle answers for each question
-foreach ($questions as $key => $question) {
-    $questions[$key]['answers'] = shuffleAnswers($question);
-}
-    
-exit;
+     // Redirect to start the game with a clean URL
+     header('Location: index.php');
+    exit;
 }
 
 // Process the lifeline
@@ -81,7 +104,7 @@ function use_lifeline($lifeline) {
 
     if ($lifeline === 'fifty_fifty' && !in_array('fifty_fifty', $_SESSION['used_lifelines'])) {
         $_SESSION['used_lifelines'][] = 'fifty_fifty';
-        $current_question = $questions[$_SESSION['current_question_index']];
+        $current_question =  $_SESSION['shuffled_questions'][$_SESSION['current_question_index']];
         $incorrectAnswers = array_keys(array_diff($current_question['answers'], [$current_question['answers'][$current_question['correct']]]));
         shuffle($incorrectAnswers);
         array_splice($incorrectAnswers, 2);
@@ -98,12 +121,13 @@ if (isset($_POST['lifeline'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
     $selection = $_POST['answer'];
 
-    $current_question = $questions[$_SESSION['current_question_index']];
+    $current_question =  $_SESSION['shuffled_questions'][$_SESSION['current_question_index']];
     $correct = $current_question['correct'];
 
-    print($_POST['answer']);
-    print($current_question['correct']);
-
+    //debugging
+    print("Chosen answer: " . $selection . "<br>");
+    print("Array Correct:" . $correct . "<br>");
+    //end debugging
 
     if ( $selection == $correct) {
         $_SESSION['score'] += 1; // Increase score for correct answer
@@ -120,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
 
 // Get the current question or end the game
 if (isset($questions[$_SESSION['current_question_index']])) {
-    $current_question = $questions[$_SESSION['current_question_index']];
+    $current_question =  $_SESSION['shuffled_questions'][$_SESSION['current_question_index']];
     // Apply the 50:50 lifeline if it has been used for this question
     if (isset($_SESSION['fifty_fifty_options'])) {
         $current_question['answers'] = $_SESSION['fifty_fifty_options'];
@@ -162,13 +186,25 @@ $high_scores = get_high_scores($scores_file);
             <button type="submit">Start Game</button>
         </form>
     <?php elseif (!isset($game_over)): ?>
+
+        <!--debugging-->
+        <?php
+        foreach ($_SESSION['shuffled_questions'] as $key => $question) {
+            echo "Question: " . $question['question'] . "<br>";
+            echo "Answers: " . implode(", ", $question['answers']) . "<br>";
+            echo "Correct Answer: " . $question['correct'] . "<br><br>";
+        }
+        ?>
+        <!--end debugging-->
+
+
         <div class="game">
             <div class="question">
                 <p><?php echo htmlspecialchars($current_question['question']); ?></p>
             </div>
             <div class="answers">
                 <form action="index.php" method="post">
-                    <?php foreach ($current_question['answers'] as $index => $answer): ?>
+                    <?php foreach ($current_question['answers'] as $answer): ?>
                         <button type="submit" name="answer" value="<?php echo $answer; ?>">
                             <?php echo htmlspecialchars($answer); ?>
                         </button>
