@@ -33,11 +33,11 @@ $questions = [
     // ... More questions
 ];
 
-if (!isset($_SESSION['shuffled_questions'])) {
-    $_SESSION['shuffled_questions'] = $questions;
+if (!isset($_SESSION['shuffledQuestions'])) {
+    $_SESSION['shuffledQuestions'] = $questions;
 
     // Shuffle the questions at the beginning of the session
-    shuffle($_SESSION['shuffled_questions']);
+    shuffle($_SESSION['shuffledQuestions']);
 
     // Function to shuffle answers for a given question
     function shuffleAnswers($question) {
@@ -47,8 +47,8 @@ if (!isset($_SESSION['shuffled_questions'])) {
     }
 
     // Shuffle answers for each question in the shuffled set
-    foreach ($_SESSION['shuffled_questions'] as $key => $question) {
-        $_SESSION['shuffled_questions'][$key]['answers'] = shuffleAnswers($question);
+    foreach ($_SESSION['shuffledQuestions'] as $key => $question) {
+        $_SESSION['shuffledQuestions'][$key]['answers'] = shuffleAnswers($question);
     }
 }
 
@@ -104,7 +104,7 @@ function use_lifeline($lifeline) {
 
     if ($lifeline === 'fifty_fifty' && !in_array('fifty_fifty', $_SESSION['used_lifelines'])) {
         $_SESSION['used_lifelines'][] = 'fifty_fifty';
-        $current_question =  $_SESSION['shuffled_questions'][$_SESSION['current_question_index']];
+        $current_question =  $_SESSION['shuffledQuestions'][$_SESSION['current_question_index']];
         $incorrectAnswers = array_keys(array_diff($current_question['answers'], [$current_question['answers'][$current_question['correct']]]));
         shuffle($incorrectAnswers);
         array_splice($incorrectAnswers, 2);
@@ -121,7 +121,7 @@ if (isset($_POST['lifeline'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
     $selection = $_POST['answer'];
 
-    $current_question =  $_SESSION['shuffled_questions'][$_SESSION['current_question_index']];
+    $current_question =  $_SESSION['shuffledQuestions'][$_SESSION['current_question_index']];
     $correct = $current_question['correct'];
 
     //debugging
@@ -144,7 +144,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
 
 // Get the current question or end the game
 if (isset($questions[$_SESSION['current_question_index']])) {
-    $current_question =  $_SESSION['shuffled_questions'][$_SESSION['current_question_index']];
+    $current_question =  $_SESSION['shuffledQuestions'][$_SESSION['current_question_index']];
     // Apply the 50:50 lifeline if it has been used for this question
     if (isset($_SESSION['fifty_fifty_options'])) {
         $current_question['answers'] = $_SESSION['fifty_fifty_options'];
@@ -189,7 +189,7 @@ $high_scores = get_high_scores($scores_file);
 
         <!--debugging-->
         <?php
-        foreach ($_SESSION['shuffled_questions'] as $key => $question) {
+        foreach ($_SESSION['shuffledQuestions'] as $key => $question) {
             echo "Question: " . $question['question'] . "<br>";
             echo "Answers: " . implode(", ", $question['answers']) . "<br>";
             echo "Correct Answer: " . $question['correct'] . "<br><br>";
