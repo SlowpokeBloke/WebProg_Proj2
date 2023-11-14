@@ -3,53 +3,205 @@ session_start();
 
 $scores_file = './scores.txt';
 
-// Mock questions for the example
-$questions = [
+//all potential questions for game in easy, medium, and hard categories
+$questionsEasy = [
     [
         'question' => 'What is the capital of France?',
         'answers' => ['Berlin', 'Paris', 'Rome', 'Madrid'],
         'correct' => 'Paris'
     ],
     [
-        'question' => 'Which planet is known as the Red Planet?',
-        'answers' => ['Earth', 'Venus', 'Mars', 'Jupiter'],
+        'question' => 'Who wrote the play "Romeo and Juliet"?',
+        'answers' => ['William Shakespeare', 'Charles Dickens', 'Jane Austen', 'Mark Twain'],
+        'correct' => 'William Shakespeare'
+    ],
+    [
+        'question' => 'Which planet is known as the "Red Planet"?',
+        'answers' => ['Venus', 'Mars', 'Jupiter', 'Saturn'],
         'correct' => 'Mars'
     ],
     [
-        'question' => 'Question 3',
-        'answers' => ['filler', 'filler', 'filler', '3'],
-        'correct' => '3'
+        'question' => 'What is the largest ocean on Earth?',
+        'answers' => ['Indian Ocean', 'Atlantic Ocean', 'Pacific Ocean', 'Arctic Ocean'],
+        'correct' => 'Pacific Ocean'
     ],
     [
-        'question' => 'Question 4',
-        'answers' => ['4', 'filler', 'filler', 'filler'],
-        'correct' => '4'
+        'question' => 'In what year did the first manned moon landing occur?',
+        'answers' => ['1965', '1969', '1975', '1981'],
+        'correct' => '1969'
     ],
     [
-        'question' => 'Question 5',
-        'answers' => ['filler', '5', 'filler', 'filler'],
-        'correct' => '5'
-    ]
-    // ... More questions
+        'question' => 'What is the capital of Japan?',
+        'answers' => ['Seoul', 'Tokyo', 'Beijing', 'Bangkok'],
+        'correct' => 'Tokyo'
+    ],
+    [
+        'question' => 'Which element has the chemical symbol "O"?',
+        'answers' => ['Oxygen', 'Gold', 'Iron', 'Sodium'],
+        'correct' => 'Oxygen'
+    ],
+    [
+        'question' => 'Who is known as the "Father of Computer Science"?',
+        'answers' => ['Alan Turing', 'Bill Gates', 'Steve Jobs', 'Tim Berners-Lee'],
+        'correct' => 'Alan Turing'
+    ],
+    [
+        'question' => 'What is the currency of the United Kingdom?',
+        'answers' => ['Euro', 'Dollar', 'Pound', 'Yen'],
+        'correct' => 'Pound'
+    ],
+    [
+        'question' => 'Which Disney character is known for leaving a glass slipper at a royal ball?',
+        'answers' => ['Cinderella', 'Ariel', 'Belle', 'Mulan'],
+        'correct' => 'Cinderella'
+    ],
 ];
 
+$questionsMedium = [
+    [
+        'question' => 'Which novel begins with the line, "It was the best of times, it was the worst of times"?',
+        'answers' => ['Pride and Prejudice', ' A Tale of Two Cities', '1984', 'The Great Gatsby'],
+        'correct' => 'A Tale of Two Cities'
+    ],
+    [
+        'question' => 'What is the largest mammal in the world?',
+        'answers' => ['Elephant', 'Blue Whale', 'Giraffe', 'Gorilla'],
+        'correct' => 'Blue Whale'
+    ],
+    [
+        'question' => 'Who painted the Mona Lisa?',
+        'answers' => ['Vincent van Gogh', 'Pablo Picasso', 'Leonardo da Vinci', 'Michelangelo'],
+        'correct' => 'Leonardo da Vinci'
+    ],
+    [
+        'question' => 'What is the chemical symbol for gold?',
+        'answers' => ['Gd', 'Au', 'Ag', 'Fe'],
+        'correct' => 'Au'
+    ],
+    [
+        'question' => 'Which planet is known as the "Morning Star" or "Evening Star"?',
+        'answers' => ['Mars', 'Venus', 'Mercury', 'Jupiter'],
+        'correct' => 'Venus'
+    ],
+    [
+        'question' => 'In what year did World War II end?',
+        'answers' => ['1943', '1945', '1947', '1950'],
+        'correct' => '1945'
+    ],
+    [
+        'question' => 'Who wrote the play "Hamlet"?',
+        'answers' => ['William Wordsworth', 'William Faulkner', 'William Shakespeare', 'William Blake'],
+        'correct' => 'William Shakespeare'
+    ],
+    [
+        'question' => 'What is the largest organ in the human body?',
+        'answers' => ['Heart', 'Liver', 'Skin', 'Brain'],
+        'correct' => 'Skin'
+    ],
+    [
+        'question' => 'Which gas is most abundant in the Earth\'s atmosphere?',
+        'answers' => ['Nitrogen', 'Oxygen', 'Carbon Dioxide', 'Hydrogen'],
+        'correct' => 'Nitrogen'
+    ],
+    [
+        'question' => 'Which famous scientist developed the theory of general relativity?',
+        'answers' => ['Isaac Newton', 'Albert Einstein', 'Galileo Galilei', 'Stephen Hawking'],
+        'correct' => 'Albert Einstein'
+    ],
+];
+
+$questionsHard = [
+    [
+        'question' => 'What is the speed of light in a vacuum, approximately?',
+        'answers' => ['300,000 kilometers per second', '150,000 miles per second', '186,282 miles per second', '500,000 kilometers per second'],
+        'correct' => '186,282 miles per second'
+    ],
+    [
+        'question' => 'Which element has the highest melting point?',
+        'answers' => ['Tungsten', 'Titanium', 'Platinum', 'Rhenium'],
+        'correct' => 'Tungsten'
+    ],
+    [
+        'question' => 'Who was the first woman to win a Nobel Prize?',
+        'answers' => ['Marie Curie', 'Rosalind Franklin', 'Dorothy Crowfoot Hodgkin', 'Barbara McClintock'],
+        'correct' => 'Marie Curie'
+    ],
+    [
+        'question' => 'In what year did the Chernobyl nuclear disaster occur?',
+        'answers' => ['1980', '1986', '1991', '1975'],
+        'correct' => '1986'
+    ],
+    [
+        'question' => 'What is the smallest prime number?',
+        'answers' => ['0', '1', '2', '3'],
+        'correct' => '2'
+    ],
+    [
+        'question' => 'Who wrote the epic poem "Paradise Lost"?',
+        'answers' => ['John Keats', 'Samuel Taylor Coleridge', 'John Milton', 'Geoffrey Chaucer'],
+        'correct' => 'John Milton'
+    ],
+    [
+        'question' => 'What is the molecular formula of water?',
+        'answers' => ['H2O2', 'CO2', 'H2O', 'CH4'],
+        'correct' => 'H2O'
+    ],
+    [
+        'question' => 'Which planet is known as the "Ice Giant"?',
+        'answers' => ['Uranus', 'Neptune', 'Saturn', 'Jupiter'],
+        'correct' => 'Neptune'
+    ],
+    [
+        'question' => 'What is the largest desert in the world by area?',
+        'answers' => ['Sahara Desert', 'Antarctic Desert', 'Arabian Desert', 'Gobi Desert'],
+        'correct' => 'Antarctic Desert'
+    ],
+    [
+        'question' => 'Who is credited with the discovery of penicillin?',
+        'answers' => ['Alexander Fleming', 'Louis Pasteur', 'Joseph Lister', 'Marie Curie'],
+        'correct' => 'Alexander Fleming'
+    ],
+];
+
+//Compiling a random set of 5 easy, 5 medium, and 5 hard questions at beginning of session
 if (!isset($_SESSION['shuffledQuestions'])) {
-    $_SESSION['shuffledQuestions'] = $questions;
+    
+    $shuffledQuestionsEasy = $questionsEasy;
+    $shuffledQuestionsMedium = $questionsMedium;
+    $shuffledQuestionsHard = $questionsHard;
 
-    // Shuffle the questions at the beginning of the session
-    shuffle($_SESSION['shuffledQuestions']);
+    //Shuffling each of the question arrays at the beginning of the session
+    shuffle($shuffledQuestionsEasy);
+    shuffle($shuffledQuestionsMedium);
+    shuffle($shuffledQuestionsHard);
 
-    // Function to shuffle answers for a given question
+    //Function to shuffle answers order for a single given question
     function shuffleAnswers($question) {
         $answers = $question['answers'];
         shuffle($answers);
         return $answers;
     }
 
-    // Shuffle answers for each question in the shuffled set
-    foreach ($_SESSION['shuffledQuestions'] as $key => $question) {
-        $_SESSION['shuffledQuestions'][$key]['answers'] = shuffleAnswers($question);
+    //Shuffling answers order for each question using the shuffleAnswers function
+    //Same process for each array
+    foreach ($shuffledQuestionsEasy as $key => $question) {
+        $shuffledQuestionsEasy[$key]['answers'] = shuffleAnswers($question);
     }
+    foreach ($shuffledQuestionsMedium as $key => $question) {
+        $shuffledQuestionsMedium[$key]['answers'] = shuffleAnswers($question);
+    }
+    foreach ($shuffledQuestionsHard as $key => $question) {
+        $shuffledQuestionsHard[$key]['answers'] = shuffleAnswers($question);
+    }
+
+    //Taking the first five questions from each shuffled array
+    $selectedEasy = array_slice($shuffledQuestionsEasy, 0, 5);
+    $selectedMedium = array_slice($shuffledQuestionsMedium, 0, 5);
+    $selectedHard = array_slice($shuffledQuestionsHard, 0, 5);
+
+    //Compiling the selected questions into one final array
+    $_SESSION['shuffledQuestions'] = array_merge($selectedEasy, $selectedMedium, $selectedHard);
+
 }
 
 
@@ -143,7 +295,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
 
 
 // Get the current question or end the game
-if (isset($questions[$_SESSION['current_question_index']])) {
+if (isset($_SESSION['shuffledQuestions'][$_SESSION['current_question_index']])) {
     $current_question =  $_SESSION['shuffledQuestions'][$_SESSION['current_question_index']];
     // Apply the 50:50 lifeline if it has been used for this question
     if (isset($_SESSION['fifty_fifty_options'])) {
