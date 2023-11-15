@@ -372,7 +372,7 @@ if (isset($_SESSION['shuffledQuestions'][$_SESSION['current_question_index']])) 
     }
     session_destroy();
 }
-
+/* shit dude */
 //set checkpoint at intervals of 5
 function setCheckPoint(){
     $checkNum = $_SESSION['score'] / 5;
