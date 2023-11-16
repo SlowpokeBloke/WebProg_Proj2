@@ -375,7 +375,14 @@ if (isset($_SESSION['shuffledQuestions'][$_SESSION['current_question_index']])) 
 //set checkpoint at intervals of 5
 function getCheckPoint(){
     $checkNum = $_SESSION['score'] / 5;
-    $checkNum = 13 / 5;
+    //hardcodeed to test
+    /** if score < 5, check is 0
+     * if score = 5, check is 5
+     * if  10 > score > 5, check is 5
+     * if score = 10, check is 10
+     * if score > 10, check is 10
+     */
+    //$checkNum = 13 / 5;
     if($checkNum > 0){
         /*set check */
         
@@ -386,6 +393,8 @@ function getCheckPoint(){
 //"Take the Money and Run"/Give Up option
 function giveUp(){
     $checkNum = $_SESSION['score'];
+    //test
+    //$checkNum = 13;
     if($checkNum > 0){
         return 100 * pow(2, $checkNum);
     } else{
