@@ -229,7 +229,8 @@ $high_scores = get_high_scores($scores_file);
                             <?php echo htmlspecialchars($answer); ?>
                         </button>
                     <?php endforeach; ?>
-                    <?php if (!in_array('fifty_fifty', $_SESSION['used_lifelines'])): ?>
+                  <div class="lifeline">
+                  <?php if (!in_array('fifty_fifty', $_SESSION['used_lifelines'])): ?>
                         <button type="submit" name="lifeline" value="fifty_fifty">Use 50:50</button>
                     <?php endif; ?>
                     <?php if (!in_array('ask_audience', $_SESSION['used_lifelines'])): ?>
@@ -238,6 +239,7 @@ $high_scores = get_high_scores($scores_file);
                     <?php if (!in_array('phone_a_friend', $_SESSION['used_lifelines'])): ?>
                         <button type="submit" name="lifeline" value="phone_a_friend">Phone a Friend</button>
                     <?php endif; ?>
+                  </div>
                 </form>
             </div>
             <?php if (isset($current_question['audience_response'])): ?>
