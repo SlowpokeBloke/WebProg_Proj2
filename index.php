@@ -287,6 +287,9 @@ function use_lifeline($lifeline) {
     $_SESSION['audience_response'] = $audience_response;
 	
 	//PHONE A FRIEND logic
+    /** BROKEN
+     * text does not display
+     */
 	} elseif ($lifeline === 'phone_a_friend' && !in_array('phone_a_friend', $_SESSION['used_lifelines'])) {
         $_SESSION['used_lifelines'][] = 'phone_a_friend';
         $current_question = $_SESSION['shuffledQuestions'][$_SESSION['current_question_index']];
