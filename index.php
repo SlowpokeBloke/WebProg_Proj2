@@ -372,23 +372,24 @@ if (isset($_SESSION['shuffledQuestions'][$_SESSION['current_question_index']])) 
     }
     session_destroy();
 }
-//set checkpoint at intervals of 5
-function getCheckPoint(){
-    $checkNum = $_SESSION['score'] / 5;
-    //hardcodeed to test
-    /** if score < 5, check is 0
-     * if score = 5, check is 5
-     * if  10 > score > 5, check is 5
-     * if score = 10, check is 10
-     * if score > 10, check is 10
-     */
-    //$checkNum = 13 / 5;
-    if($checkNum > 0){
-        /*set check */
-        
-        return 100 * pow(2, $checkNum);
-    }
+function getCheckPoint() {
+    $score = $_SESSION['score'];
+
+    // Define the prize amounts for each checkpoint
+    $prizeAmounts = [0, 100, 200, 300, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 125000, 250000, 500000, 1000000];
+
+    // Find the index of the current checkpoint
+    $checkpointIndex = floor($score / 5) * 5;
+
+    // Ensure the checkpoint index is within the bounds of the prize amounts
+    $checkpointIndex = max(0, min(count($prizeAmounts) - 1, $checkpointIndex));
+
+    // Get the corresponding prize amount
+    $prizeAmount = $prizeAmounts[$checkpointIndex];
+
+    return $prizeAmount;
 }
+
 
 //"Take the Money and Run"/Give Up option
 function giveUp(){
@@ -500,12 +501,12 @@ $high_scores = get_high_scores($scores_file);
             <?php endif; ?>
 <?php if (isset($_SESSION['score'])): ?>
                 <div class="score">
-                    <p>Current Score: $<?php echo $_SESSION['score']; ?></p>
+                    <p>Current Prize: $<?php echo number_format(getCheckPoint()); ?></p>
                 </div>
             <?php endif; ?>
         </div>
     <?php else: ?>
-        <p>Game over! Your final score was: <?php echo $_SESSION['score']; ?></p>
+        <p>Current Prize: $<?php echo number_format(getCheckPoint()); ?></p>
         <a href="index.php">Play again</a>
     <?php endif; ?>
 </div>
