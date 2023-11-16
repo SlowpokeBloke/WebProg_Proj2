@@ -372,19 +372,25 @@ if (isset($_SESSION['shuffledQuestions'][$_SESSION['current_question_index']])) 
     }
     session_destroy();
 }
-/* shit dude */
 //set checkpoint at intervals of 5
-function setCheckPoint(){
+function getCheckPoint(){
     $checkNum = $_SESSION['score'] / 5;
+    $checkNum = 13 / 5;
     if($checkNum > 0){
         /*set check */
-        echo "Reached checkpoint " . $checkNum;
+        
+        return 100 * pow(2, $checkNum);
     }
 }
 
 //"Take the Money and Run"/Give Up option
 function giveUp(){
-    
+    $checkNum = $_SESSION['score'];
+    if($checkNum > 0){
+        return 100 * pow(2, $checkNum);
+    } else{
+        return 0;
+    }
 }
 
 // Get the top 5 high scores to display
