@@ -258,7 +258,7 @@ function use_lifeline($lifeline) {
 	//FIFTY FIFTY logic
     if ($lifeline === 'fifty_fifty' && !in_array('fifty_fifty', $_SESSION['used_lifelines'])) {
         $_SESSION['used_lifelines'][] = 'fifty_fifty';
-        $current_question = $questions[$_SESSION['current_question_index']];
+        $current_question = $_SESSION['shuffledQuestions'][$_SESSION['current_question_index']];
         $incorrect_answers = array_keys(array_diff($current_question['answers'], [$current_question['answers'][$current_question['correct']]]));
         shuffle($incorrect_answers);
         array_splice($incorrect_answers, 2);
@@ -269,7 +269,7 @@ function use_lifeline($lifeline) {
     // Mark the 'Ask the Audience' lifeline as used
     $_SESSION['used_lifelines'][] = 'ask_audience';
     // Get the current question for audience response simulation
-    $current_question = $questions[$_SESSION['current_question_index']];
+    $current_question = $_SESSION['shuffledQuestions'][$_SESSION['current_question_index']];
     // Simulate audience response (customize the logic based on your preference)
     $audience_response = array_fill(0, count($current_question['answers']), 0);
     // Simulate a higher probability for the correct answer
@@ -289,7 +289,7 @@ function use_lifeline($lifeline) {
 	//PHONE A FRIEND logic
 	} elseif ($lifeline === 'phone_a_friend' && !in_array('phone_a_friend', $_SESSION['used_lifelines'])) {
         $_SESSION['used_lifelines'][] = 'phone_a_friend';
-        $current_question = $questions[$_SESSION['current_question_index']];
+        $current_question = $_SESSION['shuffledQuestions'][$_SESSION['current_question_index']];
         // Simulate a friend's response (you can customize the logic based on your preference)
         $friend_response = $current_question['answers'][$current_question['correct']];
         $_SESSION['phone_a_friend_response'] = $friend_response;
@@ -334,10 +334,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
     $current_question =  $_SESSION['shuffledQuestions'][$_SESSION['current_question_index']];
     $correct = $current_question['correct'];
 
-    //debugging
-    print("Chosen answer: " . $selection . "<br>");
-    print("Array Correct:" . $correct . "<br>");
-    //end debugging
+    // //debugging
+    // print("Chosen answer: " . $selection . "<br>");
+    // print("Array Correct:" . $correct . "<br>");
+    // //end debugging
 
     if ( $selection == $correct) {
         $_SESSION['score'] += 1; // Increase score for correct answer
@@ -452,15 +452,15 @@ $high_scores = get_high_scores($scores_file);
         </form>
     <?php elseif (!isset($game_over)): ?>
 
-        <!--debugging-->
+        <!-- debugging
         <?php
-        foreach ($_SESSION['shuffledQuestions'] as $key => $question) {
-            echo "Question: " . $question['question'] . "<br>";
-            echo "Answers: " . implode(", ", $question['answers']) . "<br>";
-            echo "Correct Answer: " . $question['correct'] . "<br><br>";
-        }
+        // foreach ($_SESSION['shuffledQuestions'] as $key => $question) {
+        //     echo "Question: " . $question['question'] . "<br>";
+        //     echo "Answers: " . implode(", ", $question['answers']) . "<br>";
+        //     echo "Correct Answer: " . $question['correct'] . "<br><br>";
+        // }
         ?>
-        <!--end debugging-->
+        end debugging -->
 
 
         <div class="game">
