@@ -402,6 +402,17 @@ function giveUp(){
     }
 }
 
+//Funciton to determine bg image
+function determineBackgroundClass() {
+    if (!isset($_SESSION['player_name'])) {
+        return 'input-screen';
+    } elseif (!isset($game_over)) {
+        return 'game-screen';
+    } else {
+        return 'game-over-screen';
+    }
+}
+
 // Get the top 5 high scores to display
 $high_scores = get_high_scores($scores_file);
 
@@ -413,9 +424,9 @@ $high_scores = get_high_scores($scores_file);
 <head>
     <meta charset="UTF-8">
     <title>Who Wants to Be a Millionaire</title>
-    <link rel="stylesheet" href="./teststyles.css">
+    <link rel="stylesheet" href="./styles/styles.css">
 </head>
-<body>
+<body class="<?php echo determineBackgroundClass(); ?>">
     <div class="leaderboard">
         <h3>Leaderboard</h3>
         <ol>
@@ -424,12 +435,20 @@ $high_scores = get_high_scores($scores_file);
             <?php endforeach; ?>
         </ol>
     </div>
+
+    <div class="main">
+
     
     <?php if (!isset($_SESSION['player_name'])): ?>
-        <form action="index.php" method="post">
+        <form class="start"action="index.php" method="post">
+<img class="logo" src="./styles/assets/Logo.png" alt="logo" >
+            <br>
+            <div class="start-box">
             <label for="player_name">Enter your name:</label>
             <input type="text" id="player_name" name="player_name" required>
             <button type="submit">Start Game</button>
+</div>
+            
         </form>
     <?php elseif (!isset($game_over)): ?>
 
@@ -479,11 +498,18 @@ $high_scores = get_high_scores($scores_file);
                     <p><?php echo $current_question['phone_a_friend_response']; ?></p>
                 </div>
             <?php endif; ?>
+<?php if (isset($_SESSION['score'])): ?>
+                <div class="score">
+                    <p>Current Score: $<?php echo $_SESSION['score']; ?></p>
+                </div>
+            <?php endif; ?>
         </div>
     <?php else: ?>
         <p>Game over! Your final score was: <?php echo $_SESSION['score']; ?></p>
         <a href="index.php">Play again</a>
     <?php endif; ?>
+</div>
+
 </body>
 
 </html>
