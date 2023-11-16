@@ -315,7 +315,10 @@ if (isset($_POST['lifeline'])) {
 // Check if an answer was submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
     $current_question = $_SESSION['shuffledQuestions'][$_SESSION['current_question_index']];
-    if ($current_question['answers'][$_POST['answer']] === $current_question['answers'][$current_question['correct']]) {
+    $correct = $current_question['correct'];
+    $selection = $_POST['answer'];
+
+    if ($selection == $correct) {
         $_SESSION['score'] += 100; // Increase score for correct answer
         $_SESSION['current_question_index'] += 1; // Move to next question
         unset($_SESSION['fifty_fifty_options']); // Reset the 50:50 lifeline options
@@ -410,8 +413,8 @@ $high_scores = get_high_scores($scores_file);
             </div>
             <div class="answers">
                 <form action="index.php" method="post">
-                    <?php foreach ($current_question['answers'] as $index => $answer): ?>
-                        <button type="submit" name="answer" value="<?php echo $index; ?>">
+                    <?php foreach ($current_question['answers'] as $answer): ?>
+                        <button type="submit" name="answer" value="<?php echo $answer; ?>">
                             <?php echo htmlspecialchars($answer); ?>
                         </button>
                     <?php endforeach; ?>
