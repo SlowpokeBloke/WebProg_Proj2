@@ -130,7 +130,20 @@ body {
     background-color: #555;
     transform: scale(1.1);
 }
-
+.lifeline{
+    position: absolute;
+    left: 0;
+    width: auto;
+    background-color: #ffffff23;
+    border-radius: 5px;
+    margin-top: 1rem;
+    margin-left: 1rem;
+    padding: 20px;
+    height: 280px;
+    transform: scale(1);
+    transition: transform 0.3s ease;
+    text-align: start;
+}
 .lifeline-response {
     background-color: #333;
     border-radius: 5px;
