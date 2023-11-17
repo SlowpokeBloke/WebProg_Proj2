@@ -412,6 +412,16 @@ function determineBackgroundClass() {
         return 'game-over-screen';
     }
 }
+function getPrizeAmount($score) {
+    // Define the prize amounts for each checkpoint
+    $prizeAmounts = [0, 100, 200, 300, 500, 1000, 2000, 4000, 8000, 16000, 32000, 64000, 125000, 250000, 500000, 1000000];
+
+    // Ensure the score is within the bounds of the prize amounts array
+    $score = max(0, min(count($prizeAmounts) - 1, $score));
+
+    // Get the corresponding prize amount
+    return $prizeAmounts[$score];
+}
 
 // Get the top 5 high scores to display
 $high_scores = get_high_scores($scores_file);
@@ -431,7 +441,7 @@ $high_scores = get_high_scores($scores_file);
         <h3>Leaderboard</h3>
         <ol>
             <?php foreach ($high_scores as $name => $score): ?>
-                <li><?php echo htmlspecialchars($name) . ' - ' . $score; ?></li>
+                <li><?php echo htmlspecialchars($name) . ' - $' . $score; ?></li>
             <?php endforeach; ?>
         </ol>
     </div>
@@ -503,9 +513,9 @@ $high_scores = get_high_scores($scores_file);
             <?php endif; ?>
 <?php if (isset($_SESSION['score'])): ?>
                 <div class="score">
-                    <!-- grabbing checkpoint instead of current score for some reason -->
-                    <p>Current Prize: $<?php echo number_format(getCheckPoint()); ?></p>
-                </div>
+                    <?php if (isset($_SESSION['score'])): ?>
+                    <p>Current Prize: $<?php echo number_format(getPrizeAmount($_SESSION['score'])); ?></p>
+                <?php endif; ?>                </div>
             <?php endif; ?>
         </div>
     <?php else: ?>
