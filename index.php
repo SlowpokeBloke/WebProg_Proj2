@@ -341,7 +341,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
     // print("Array Correct:" . $correct . "<br>");
     // //end debugging
 
-    if ( $selection == $correct) {
+    if ($selection == $correct) {
         $_SESSION['score'] += 1; // Increase score for correct answer
         save_score($_SESSION['player_name'], $_SESSION['score'], $scores_file);
         $_SESSION['current_question_index'] += 1; // Move to next question
@@ -357,8 +357,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
 
 // Get the current question or end the game
 if (isset($_SESSION['shuffledQuestions'][$_SESSION['current_question_index']])) {
-    $current_question =  $_SESSION['shuffledQuestions'][$_SESSION['current_question_index']];
-    // Apply the 50:50 lifeline if it has been used for this question
+    $current_question = $_SESSION['shuffledQuestions'][$_SESSION['current_question_index']];
+    // Apply lifelines if they have been used for this question
     if (isset($_SESSION['fifty_fifty_options'])) {
         $current_question['answers'] = $_SESSION['fifty_fifty_options'];
     } elseif (isset($_SESSION['audience_response'])) {
@@ -455,7 +455,7 @@ $high_scores = get_high_scores($scores_file);
     
     <?php if (!isset($_SESSION['player_name'])): ?>
         <form class="start"action="index.php" method="post">
-<img class="logo" src="./styles/assets/Logo.png" alt="logo" >
+            <img class="logo" src="./styles/assets/Logo.png" alt="logo" >
             <br>
             <div class="start-box">
             <label for="player_name">Enter your name:</label>
@@ -478,25 +478,26 @@ $high_scores = get_high_scores($scores_file);
 
 
         <div class="game">
+        <img class="game-logo" src="./styles/assets/Logo.png" alt="logo">
             <div class="question">
                 <p><?php echo htmlspecialchars($current_question['question']); ?></p>
             </div>
             <div class="answers">
-                <form action="index.php" method="post">
+                <form class="grid"  action="index.php" method="post">
                     <?php foreach ($current_question['answers'] as $answer): ?>
-                        <button type="submit" name="answer" value="<?php echo $answer; ?>">
+                        <button class="answer"  type="submit" name="answer" value="<?php echo $answer; ?>">
                             <?php echo htmlspecialchars($answer); ?>
                         </button>
                     <?php endforeach; ?>
             <div class="lifeline">
-                    <?php if (!in_array('fifty_fifty', $_SESSION['used_lifelines'])): ?>
-                        <button type="submit" name="lifeline" value="fifty_fifty">Use 50:50</button>
+                    <?php if (!in_array('fifty_fifty', $_SESSION['used_lifelines'])) : ?>
+                        <button class="lifeline-btn" type="submit" name="lifeline" value="fifty_fifty">Use 50:50</button>
                     <?php endif; ?>
-                    <?php if (!in_array('ask_audience', $_SESSION['used_lifelines'])): ?>
-                        <button type="submit" name="lifeline" value="ask_audience">Ask the Audience</button>
+                    <?php if (!in_array('ask_audience', $_SESSION['used_lifelines'])) : ?>
+                        <button class="lifeline-btn" type="submit" name="lifeline" value="ask_audience">Ask the Audience</button>
                     <?php endif; ?>
-                    <?php if (!in_array('phone_a_friend', $_SESSION['used_lifelines'])): ?>
-                        <button type="submit" name="lifeline" value="phone_a_friend">Phone a Friend</button>
+                    <?php if (!in_array('phone_a_friend', $_SESSION['used_lifelines'])) : ?>
+                        <button class="lifeline-btn" type="submit" name="lifeline" value="phone_a_friend">Phone a Friend</button>
                     <?php endif; ?>
             </div>
                 </form>
@@ -522,8 +523,12 @@ $high_scores = get_high_scores($scores_file);
             <?php endif; ?>
         </div>
     <?php else: ?>
-        <p>Current Prize: $<?php echo number_format(getCheckPoint()); ?></p>
+        <div class="game">
+                <div class="question">
+		<h1>Game over! Current Prize: $<?php echo number_format(getCheckPoint()); ?></h1>
         <a href="index.php">Play again</a>
+<br>
+                </div>
     <?php endif; ?>
 </div>
 
