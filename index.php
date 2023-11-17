@@ -500,12 +500,14 @@ $high_scores = get_high_scores($scores_file);
                 </div>
             <?php elseif (isset($current_question['phone_a_friend_response'])): ?>
                 <div class="lifeline-response">
+                    <!--not displaying p-a-f text properly-->
                     <p>Phone a Friend Response:</p>
                     <p><?php echo $current_question['phone_a_friend_response']; ?></p>
                 </div>
             <?php endif; ?>
 <?php if (isset($_SESSION['score'])): ?>
                 <div class="score">
+                    <!-- grabbing checkpoint instead of current score for some reason -->
                     <p>Current Prize: $<?php echo number_format(getCheckPoint()); ?></p>
                 </div>
             <?php endif; ?>
