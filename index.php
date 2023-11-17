@@ -527,7 +527,7 @@ $high_scores = get_high_scores($scores_file);
                 <div class="question">
 		<h1>Game over! Current Prize: $<?php echo number_format(getCheckPoint()); ?></h1>
         <a href="index.php">Play again</a>
-<br>
+        <br>
                 </div>
     <?php endif; ?>
 </div>
