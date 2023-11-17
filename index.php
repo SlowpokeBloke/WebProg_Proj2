@@ -223,6 +223,7 @@ function get_high_scores($scores_file) {
 function save_score($name, $score, $scores_file) {
     // Get existing high scores
     $scores = get_high_scores($scores_file);
+    $score = getPrizeAmount($score);
 
     // Check if the player already has a score
     if (array_key_exists($name, $scores)) {
@@ -394,19 +395,20 @@ function getCheckPoint() {
 }
 
 
+// deprecated
 //"Take the Money and Run"/Give Up option
-function giveUp(){
-    $checkNum = $_SESSION['score'];
-    //test
-    //$checkNum = 13;
-    if($checkNum > 0){
-        return 100 * pow(2, $checkNum);
-    } else{
-        return 0;
-    }
-}
+// function giveUp(){
+//     $checkNum = $_SESSION['score'];
+//     //test
+//     //$checkNum = 13;
+//     if($checkNum > 0){
+//         return 100 * pow(2, $checkNum);
+//     } else{
+//         return 0;
+//     }
+// }
 
-//Funciton to determine bg image
+//Function to determine bg image
 function determineBackgroundClass() {
     if (!isset($_SESSION['player_name'])) {
         return 'input-screen';
