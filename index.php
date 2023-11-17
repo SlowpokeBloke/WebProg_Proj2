@@ -259,11 +259,11 @@ function use_lifeline($lifeline) {
     if ($lifeline === 'fifty_fifty' && !in_array('fifty_fifty', $_SESSION['used_lifelines'])) {
         $_SESSION['used_lifelines'][] = 'fifty_fifty';
         $current_question = $_SESSION['shuffledQuestions'][$_SESSION['current_question_index']];
-        $incorrect_answers = array_keys(array_diff($current_question['answers'], [$current_question['answers'][$current_question['correct']]]));
+        $incorrect_answers = array_diff($current_question['answers'], [$current_question['correct']]);
         shuffle($incorrect_answers);
         array_splice($incorrect_answers, 2);
-        $_SESSION['fifty_fifty_options'] = array_diff_key($current_question['answers'], array_flip($incorrect_answers));
-    	
+        $_SESSION['fifty_fifty_options'] = array_diff($current_question['answers'], $incorrect_answers);
+        
 	// ASK THE AUDIENCE Lifeline Logic
 	} elseif ($lifeline === 'ask_audience' && !in_array('ask_audience', $_SESSION['used_lifelines'])) {
     // Mark the 'Ask the Audience' lifeline as used
