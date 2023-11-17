@@ -249,6 +249,9 @@ function save_score($name, $score, $scores_file) {
 
     // Write the scores back to the file
     file_put_contents($scores_file, implode("\n", $scores_data));
+
+    // Update the session variable with the latest scores
+    $_SESSION['high_scores'] = $scores;
 }
 
 // Process the lifeline
@@ -340,6 +343,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
 
     if ( $selection == $correct) {
         $_SESSION['score'] += 1; // Increase score for correct answer
+        save_score($_SESSION['player_name'], $_SESSION['score'], $scores_file);
         $_SESSION['current_question_index'] += 1; // Move to next question
         unset($_SESSION['fifty_fifty_options']); // Reset the 50:50 lifeline options
         unset($_SESSION['audience_response']); // Reset the audience response lifeline
