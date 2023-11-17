@@ -38,13 +38,23 @@ body {
     flex-direction: column;
     align-items: center;
 }
-.logo{
-
+.logo {
     height: 400px;
     opacity: 0;
     animation: fadeIn 1s forwards;
     transition: transform 0.3s ease;
 }
+.game-logo:hover {
+    transform: scale(1.02);
+  }
+  .game-logo {
+    height: 300px;
+    opacity: 0;
+    animation: fadeIn 1s forwards;
+    transition: transform 0.3s ease;
+    margin-bottom: 3rem;
+}
+
 .logo:hover{
        transform: scale(1.02);
 }
@@ -114,6 +124,12 @@ body {
     transform: translateY(0);
 }
 
+.grid {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 1rem;
+}
+
 .answers button {
     background-color: #444;
     border: none;
@@ -132,6 +148,7 @@ body {
 }
 .lifeline{
     position: absolute;
+    top: 30%;
     left: 0;
     width: auto;
     background-color: #ffffff23;
@@ -143,6 +160,9 @@ body {
     transform: scale(1);
     transition: transform 0.3s ease;
     text-align: start;
+display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 .lifeline-response {
     background-color: #333;
@@ -151,7 +171,10 @@ body {
     padding: 20px;
     transition: all 0.5s ease-in-out;
 }
-
+.lifeline-btn {
+  color: #fff !important;
+  background-color: blue !important;
+}
 .lifeline-response p {
     font-size: 18px;
 }
@@ -160,7 +183,10 @@ form {
     margin: 20px auto;
     width: 60%;
 }
-
+.answer {
+  padding: 1rem;
+  background-color: #ffd700;
+}
 input[type="text"] {
     border: 2px solid #333;
     border-radius: 5px;
@@ -191,19 +217,51 @@ button[type="submit"]:hover {
 }
 
 a {
-    color: #ffd700;
+    /* color: #ffd700;
     display: inline-block;
-    margin-top: 20px;
+    margin-top: 20px; */
     text-decoration: none;
-    transition: color 0.3s, transform 0.2s;
+    background-color: #ffd700;
+  border: none;
+  border-radius: 5px;
+  color: #333;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 15px 30px;
+  transition: background-color 0.3s, transform 0.2s;
+
 }
 
 a:hover {
-    color: #ffcc00;
-    transform: scale(1.1);
+    
+  background-color: #ffcc00;
+  transform: translateY(-5px);
+}
+
+.score:hover {
+  transform: scale(1.05);
+}
+.score {
+  font-weight: bold;
+  font-size: 20px;
+  color: blue;
+  border: 2px solid #ffd700;
+
+  position: absolute;
+  right: 0;
+  top: 10%;
+  width: 200px;
+  background-color: #222;
+  border-radius: 5px;
+  margin-top: 1rem;
+  margin-right: 1rem;
+  padding: 20px;
+  transform: scale(1);
+  transition: transform 0.3s ease;
+  text-align: start;
 }
 .input-screen {
-    background-image: url('./assets/MainScreen.png');
+    background-image: url("./assets/MainScreen.png");
     background-size: cover;
     background-position: center;
     background-position: center;
@@ -212,10 +270,11 @@ a:hover {
 }
 
 .game-screen {
-    background-image: url('./assets/GameScreen.jpeg');
+    background-image: url("./assets/GameScreen.jpeg");
     background-size: cover;
     background-position: center;
     height: 100vh;
+    backdrop-filter:  brightness(0.5);
 }
 
 .game-over-screen {
