@@ -488,7 +488,7 @@ $high_scores = get_high_scores($scores_file);
                             <?php echo htmlspecialchars($answer); ?>
                         </button>
                     <?php endforeach; ?>
-<div class="lifeline">
+            <div class="lifeline">
                     <?php if (!in_array('fifty_fifty', $_SESSION['used_lifelines'])): ?>
                         <button type="submit" name="lifeline" value="fifty_fifty">Use 50:50</button>
                     <?php endif; ?>
@@ -498,7 +498,7 @@ $high_scores = get_high_scores($scores_file);
                     <?php if (!in_array('phone_a_friend', $_SESSION['used_lifelines'])): ?>
                         <button type="submit" name="lifeline" value="phone_a_friend">Phone a Friend</button>
                     <?php endif; ?>
-</div>
+            </div>
                 </form>
             </div>
             <?php if (isset($current_question['audience_response'])): ?>
@@ -510,12 +510,11 @@ $high_scores = get_high_scores($scores_file);
                 </div>
             <?php elseif (isset($current_question['phone_a_friend_response'])): ?>
                 <div class="lifeline-response">
-                    <!--not displaying p-a-f text properly-->
                     <p>Phone a Friend Response:</p>
                     <p><?php echo $current_question['phone_a_friend_response']; ?></p>
                 </div>
             <?php endif; ?>
-<?php if (isset($_SESSION['score'])): ?>
+            <?php if (isset($_SESSION['score'])): ?>
                 <div class="score">
                     <?php if (isset($_SESSION['score'])): ?>
                     <p>Current Prize: $<?php echo number_format(getPrizeAmount($_SESSION['score'])); ?></p>
