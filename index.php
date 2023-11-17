@@ -265,7 +265,7 @@ function use_lifeline($lifeline) {
         $_SESSION['fifty_fifty_options'] = array_diff($current_question['answers'], $incorrect_answers);
         
 	// ASK THE AUDIENCE Lifeline Logic
-	} elseif ($lifeline === 'ask_audience' && !in_array('ask_audience', $_SESSION['used_lifelines'])) {
+    } elseif ($lifeline === 'ask_audience' && !in_array('ask_audience', $_SESSION['used_lifelines'])) {
     // Mark the 'Ask the Audience' lifeline as used
     $_SESSION['used_lifelines'][] = 'ask_audience';
     // Get the current question for audience response simulation
@@ -273,12 +273,12 @@ function use_lifeline($lifeline) {
     // Simulate audience response (customize the logic based on your preference)
     $audience_response = array_fill(0, count($current_question['answers']), 0);
     // Simulate a higher probability for the correct answer
-    $correct_answer_index = $current_question['correct'];
+    $correct_answer_index = array_search($current_question['correct'], $current_question['answers']);
     $audience_response[$correct_answer_index] = rand(70, 100);
     // Simulate the remaining percentage among the incorrect answers
-    $remaining_percentage = 100 - $audience_response[$correct_answer_index];   
+    $remaining_percentage = 100 - $audience_response[$correct_answer_index];
     // Distribute remaining percentage among the incorrect answers
-    $incorrect_answer_indices = array_diff(range(0, count($current_question['answers']) - 1), [$correct_answer_index]);  
+    $incorrect_answer_indices = array_diff(range(0, count($current_question['answers']) - 1), [$correct_answer_index]);
     foreach ($incorrect_answer_indices as $index) {
         $audience_response[$index] = rand(0, $remaining_percentage);
         $remaining_percentage -= $audience_response[$index];
