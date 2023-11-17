@@ -332,10 +332,9 @@ if (isset($_POST['lifeline'])) {
 
 // Check if an answer was submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['answer'])) {
-    $selection = $_POST['answer'];
-
-    $current_question =  $_SESSION['shuffledQuestions'][$_SESSION['current_question_index']];
+    $current_question = $_SESSION['shuffledQuestions'][$_SESSION['current_question_index']];
     $correct = $current_question['correct'];
+    $selection = $_POST['answer'];
 
     // //debugging
     // print("Chosen answer: " . $selection . "<br>");
